@@ -1,6 +1,6 @@
 import { fetchPokemonList } from "@/lib/pokeapi/client";
 import { toPokemonBasic } from "@/lib/pokeapi/normalize";
-import { PokemonListClient } from "@/components/PokemonListClient";
+import { PokemonListClient } from "@/components/pokemon/PokemonListClient";
 
 const LIMIT = 151;
 

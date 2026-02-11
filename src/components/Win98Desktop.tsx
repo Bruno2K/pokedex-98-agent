@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { PokedexShell } from "@/components/PokedexShell";
 import { Taskbar } from "@/components/Taskbar";
@@ -8,20 +9,26 @@ import type { TaskbarWindow } from "@/components/Taskbar";
 import { VideoChatWindow } from "@/components/VideoChatWindow";
 import { CalculatorWindow } from "@/components/CalculatorWindow";
 import { CalendarWindow } from "@/components/CalendarWindow";
+import { ExplorerWindow } from "@/components/ExplorerWindow";
+import { ImageViewerWindow } from "@/components/ImageViewerWindow";
 
-import recycleIcon from "@/img/recycle_bin_empty_cool-0.png";
-import globeIcon from "@/img/globe_map-5.png";
-import directoryIcon from "@/img/directory_closed-3.png";
-import videoIcon from "@/img/camera3_vid-3.png";
-import computerIcon from "@/img/computer_explorer-2.png";
-import trainerIcon from "@/img/msagent-3.png";
-import gymIcon from "@/img/minesweeper-0.png";
-import centerIcon from "@/img/tree-0.png";
-import shopIcon from "@/img/msn3-5.png";
-import settingsIcon from "@/img/server_gear-1.png";
-import calculatorIcon from "@/img/calculator-0.png";
-import calendarIcon from "@/img/calendar-0.png";
-import pokedexIcon from "@/img/search_directory-0.png";
+import { ContextMenu } from "@/components/ContextMenu";
+import { playWindowsErrorSound } from "@/lib/windows-error-sound";
+
+const recycleIconEmpty = "/icons/recycle_bin_empty_cool-0.png";
+const recycleIconFull = "/icons/recycle_bin_full-2.png";
+const globeIcon = "/icons/globe_map-5.png";
+const directoryIcon = "/icons/directory_closed-3.png";
+const videoIcon = "/icons/camera3_vid-3.png";
+const computerIcon = "/icons/computer_explorer-2.png";
+const trainerIcon = "/icons/msagent-3.png";
+const gymIcon = "/icons/minesweeper-0.png";
+const centerIcon = "/icons/tree-0.png";
+const shopIcon = "/icons/msn3-5.png";
+const settingsIcon = "/icons/server_gear-1.png";
+const calculatorIcon = "/icons/calculator-0.png";
+const calendarIcon = "/icons/calendar-0.png";
+const pokedexIcon = "/icons/search_directory-0.png";
 
 const DESKTOP_ICONS = [
   { label: "Pokédex", x: "24px", y: "24px", id: "pokedex" },
@@ -43,21 +50,31 @@ const POKEDEX_ID = "pokedex";
 const VIDEO_CHAT_ID = "video";
 const CALCULATOR_ID = "calculator";
 const CALENDAR_ID = "calendar";
+const EXPLORER_ID = "explorer";
+const IMAGE_VIEWER_ID = "image-viewer";
 
 type Win98DesktopProps = {
   children: React.ReactNode;
 };
 
 export function Win98Desktop({ children }: Win98DesktopProps) {
+  const router = useRouter();
   const [pokedexOpen, setPokedexOpen] = useState(false);
   const [videoChatOpen, setVideoChatOpen] = useState(false);
   const [calculatorOpen, setCalculatorOpen] = useState(false);
   const [calendarOpen, setCalendarOpen] = useState(false);
+  const [explorerOpen, setExplorerOpen] = useState(false);
+  const [imageViewerOpen, setImageViewerOpen] = useState(false);
+  const [imageViewerData, setImageViewerData] = useState<{ imagePath: string; imageList: string[]; index: number } | null>(null);
   const [activeWindowId, setActiveWindowId] = useState<string | null>(null);
   const [minimizedPokedex, setMinimizedPokedex] = useState(false);
   const [minimizedVideo, setMinimizedVideo] = useState(false);
   const [minimizedCalculator, setMinimizedCalculator] = useState(false);
   const [minimizedCalendar, setMinimizedCalendar] = useState(false);
+  const [minimizedExplorer, setMinimizedExplorer] = useState(false);
+  const [minimizedImageViewer, setMinimizedImageViewer] = useState(false);
+  const [trashIsEmpty, setTrashIsEmpty] = useState(false);
+  const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
 
   const taskbarWindows = useMemo<TaskbarWindow[]>(() => {
     const list: TaskbarWindow[] = [];
@@ -73,8 +90,14 @@ export function Win98Desktop({ children }: Win98DesktopProps) {
     if (calendarOpen) {
       list.push({ id: CALENDAR_ID, title: "Calendário" });
     }
+    if (explorerOpen) {
+      list.push({ id: EXPLORER_ID, title: "Exploring - Meus Documentos" });
+    }
+    if (imageViewerOpen && imageViewerData) {
+      list.push({ id: IMAGE_VIEWER_ID, title: imageViewerData.imagePath.split("/").pop() || "Imagem" });
+    }
     return list;
-  }, [pokedexOpen, videoChatOpen, calculatorOpen, calendarOpen]);
+  }, [pokedexOpen, videoChatOpen, calculatorOpen, calendarOpen, explorerOpen, imageViewerOpen, imageViewerData]);
 
   const handleTaskbarWindowClick = useCallback(
     (id: string) => {
@@ -132,7 +155,7 @@ export function Win98Desktop({ children }: Win98DesktopProps) {
         }
       }
     },
-    [activeWindowId, pokedexOpen, videoChatOpen, calculatorOpen, calendarOpen]
+    [activeWindowId, pokedexOpen, videoChatOpen, calculatorOpen, calendarOpen, explorerOpen]
   );
 
   const handleVideoClose = useCallback(() => {
@@ -167,6 +190,45 @@ export function Win98Desktop({ children }: Win98DesktopProps) {
     }
   }, [activeWindowId]);
 
+  const handleExplorerClose = useCallback(() => {
+    setExplorerOpen(false);
+    setMinimizedExplorer(false);
+    if (activeWindowId === EXPLORER_ID) {
+      setActiveWindowId(null);
+    }
+  }, [activeWindowId]);
+
+  const handleOpenImage = useCallback((imagePath: string, imageList: string[], index: number) => {
+    setImageViewerData({ imagePath, imageList, index });
+    setImageViewerOpen(true);
+    setActiveWindowId(IMAGE_VIEWER_ID);
+    setMinimizedImageViewer(false);
+  }, []);
+
+  const handleImageViewerClose = useCallback(() => {
+    setImageViewerOpen(false);
+    setMinimizedImageViewer(false);
+    setImageViewerData(null);
+    if (activeWindowId === IMAGE_VIEWER_ID) {
+      setActiveWindowId(null);
+    }
+  }, [activeWindowId]);
+
+  const handleEmptyTrash = useCallback(() => {
+    const audio = new Audio("/effects/windows-xp-recycle-bin.mp3");
+    audio.play().catch(() => {
+      // Ignore errors if audio fails to play
+    });
+    setTrashIsEmpty(true);
+    setContextMenu(null);
+  }, []);
+
+  const handleTrashContextMenu = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setContextMenu({ x: e.clientX, y: e.clientY });
+  }, []);
+
   return (
     <div className="win98-desktop">
       <div className="win98-desktop-icons" aria-hidden>
@@ -188,6 +250,14 @@ export function Win98Desktop({ children }: Win98DesktopProps) {
                       setActiveWindowId(VIDEO_CHAT_ID);
                       setMinimizedVideo(false);
                     }
+                  : item.id === "pc"
+                    ? () => {
+                        playWindowsErrorSound();
+                      }
+                  : item.id === "trash"
+                    ? () => {
+                        playWindowsErrorSound();
+                      }
                   : item.id === "calculator"
                     ? () => {
                         setCalculatorOpen(true);
@@ -200,7 +270,17 @@ export function Win98Desktop({ children }: Win98DesktopProps) {
                           setActiveWindowId(CALENDAR_ID);
                           setMinimizedCalendar(false);
                         }
-                      : undefined
+                      : item.id === "docs"
+                        ? () => {
+                            setExplorerOpen(true);
+                            setActiveWindowId(EXPLORER_ID);
+                            setMinimizedExplorer(false);
+                          }
+                        : item.id === "settings"
+                          ? () => {
+                              router.push("/bsod");
+                            }
+                          : undefined
             }
             onKeyDown={
               item.id === "pokedex"
@@ -221,6 +301,20 @@ export function Win98Desktop({ children }: Win98DesktopProps) {
                         setMinimizedVideo(false);
                       }
                     }
+                  : item.id === "pc"
+                    ? (e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          playWindowsErrorSound();
+                        }
+                      }
+                  : item.id === "trash"
+                    ? (e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          playWindowsErrorSound();
+                        }
+                      }
                   : item.id === "calculator"
                     ? (e) => {
                         if (e.key === "Enter" || e.key === " ") {
@@ -230,29 +324,72 @@ export function Win98Desktop({ children }: Win98DesktopProps) {
                           setMinimizedCalculator(false);
                         }
                       }
-                    : item.id === "calendar"
+                : item.id === "calendar"
+                  ? (e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setCalendarOpen(true);
+                        setActiveWindowId(CALENDAR_ID);
+                        setMinimizedCalendar(false);
+                      }
+                    }
+                  : item.id === "docs"
+                    ? (e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          setExplorerOpen(true);
+                          setActiveWindowId(EXPLORER_ID);
+                          setMinimizedExplorer(false);
+                        }
+                      }
+                    : item.id === "settings"
                       ? (e) => {
                           if (e.key === "Enter" || e.key === " ") {
                             e.preventDefault();
-                            setCalendarOpen(true);
-                            setActiveWindowId(CALENDAR_ID);
-                            setMinimizedCalendar(false);
+                            router.push("/bsod");
                           }
                         }
                       : undefined
             }
-            role={item.id === "pokedex" || item.id === "video" || item.id === "calculator" || item.id === "calendar" ? "button" : undefined}
-            tabIndex={item.id === "pokedex" || item.id === "video" || item.id === "calculator" || item.id === "calendar" ? 0 : undefined}
+            onContextMenu={item.id === "trash" ? handleTrashContextMenu : undefined}
+            role={
+              item.id === "pokedex" ||
+              item.id === "video" ||
+              item.id === "calculator" ||
+              item.id === "calendar" ||
+              item.id === "settings" ||
+              item.id === "pc" ||
+              item.id === "trash"
+                ? "button"
+                : undefined
+            }
+            tabIndex={
+              item.id === "pokedex" ||
+              item.id === "video" ||
+              item.id === "calculator" ||
+              item.id === "calendar" ||
+              item.id === "settings" ||
+              item.id === "pc" ||
+              item.id === "trash"
+                ? 0
+                : undefined
+            }
             aria-label={
               item.id === "pokedex"
                 ? "Abrir Pokédex"
                 : item.id === "video"
                   ? "Abrir bate-papo por vídeo com Professor Oak"
+                  : item.id === "pc"
+                    ? "Meu Computador (não disponível)"
+                  : item.id === "trash"
+                    ? "Lixeira (não disponível)"
                   : item.id === "calculator"
                     ? "Abrir calculadora"
                     : item.id === "calendar"
                       ? "Abrir calendário"
-                      : undefined
+                      : item.id === "settings"
+                        ? "Abrir configurações"
+                        : undefined
             }
           >
             <span className="win98-desktop-icon-img">
@@ -263,7 +400,12 @@ export function Win98Desktop({ children }: Win98DesktopProps) {
                 <Image src={computerIcon} alt="Meu Computador" width={32} height={32} />
               )}
               {item.id === "trash" && (
-                <Image src={recycleIcon} alt="Lixeira" width={32} height={32} />
+                <Image
+                  src={trashIsEmpty ? recycleIconEmpty : recycleIconFull}
+                  alt="Lixeira"
+                  width={32}
+                  height={32}
+                />
               )}
               {item.id === "internet" && (
                 <Image src={globeIcon} alt="Internet" width={32} height={32} />
@@ -358,6 +500,52 @@ export function Win98Desktop({ children }: Win98DesktopProps) {
           onMinimize={() => {
             setMinimizedCalendar((m) => !m);
           }}
+        />
+      )}
+      {explorerOpen && (
+        <ExplorerWindow
+          onClose={handleExplorerClose}
+          zIndex={activeWindowId === EXPLORER_ID ? 30 : 15}
+          isMinimized={minimizedExplorer}
+          onFocus={() => {
+            setActiveWindowId(EXPLORER_ID);
+            setMinimizedExplorer(false);
+          }}
+          onMinimize={() => {
+            setMinimizedExplorer((m) => !m);
+          }}
+          onOpenImage={handleOpenImage}
+        />
+      )}
+      {imageViewerOpen && imageViewerData && (
+        <ImageViewerWindow
+          imagePath={imageViewerData.imagePath}
+          imageList={imageViewerData.imageList}
+          initialIndex={imageViewerData.index}
+          onClose={handleImageViewerClose}
+          zIndex={activeWindowId === IMAGE_VIEWER_ID ? 30 : 15}
+          isMinimized={minimizedImageViewer}
+          onFocus={() => {
+            setActiveWindowId(IMAGE_VIEWER_ID);
+            setMinimizedImageViewer(false);
+          }}
+          onMinimize={() => {
+            setMinimizedImageViewer((m) => !m);
+          }}
+        />
+      )}
+      {contextMenu && (
+        <ContextMenu
+          x={contextMenu.x}
+          y={contextMenu.y}
+          items={[
+            {
+              label: trashIsEmpty ? "Lixeira vazia" : "Esvaziar Lixeira",
+              onClick: handleEmptyTrash,
+              disabled: trashIsEmpty,
+            },
+          ]}
+          onClose={() => setContextMenu(null)}
         />
       )}
       <Taskbar

@@ -4,7 +4,8 @@ import { useMemo, useState } from "react";
 import type { PokemonBasic, PokemonType, Role } from "@/lib/pokeapi/types";
 import { PokemonCard } from "./PokemonCard";
 import { TypeBadge, TYPE_COLORS } from "./TypeBadge";
-import { Button8bit } from "./Button8bit";
+import { Button8bit } from "@/components/Button8bit";
+import { playPokedexButtonSound } from "@/lib/pokedex-sound";
 
 const TYPES: PokemonType[] = [
   "normal", "fire", "water", "electric", "grass", "ice", "fighting",
@@ -65,7 +66,10 @@ export function PokemonListClient({ list }: { list: PokemonBasic[] }) {
             key={t}
             type="button"
             className="type-badge"
-            onClick={() => setSelectedType(selectedType === t ? "" : t)}
+            onClick={() => {
+              playPokedexButtonSound();
+              setSelectedType(selectedType === t ? "" : t);
+            }}
             style={{
               cursor: "pointer",
               opacity: selectedType && selectedType !== t ? 0.5 : 1,
@@ -81,7 +85,10 @@ export function PokemonListClient({ list }: { list: PokemonBasic[] }) {
         {ROLES.map((r) => (
           <Button8bit
             key={r}
-            onClick={() => setSelectedRole(selectedRole === r ? "" : r)}
+            onClick={() => {
+              playPokedexButtonSound();
+              setSelectedRole(selectedRole === r ? "" : r);
+            }}
             style={{ marginRight: 4, opacity: selectedRole && selectedRole !== r ? 0.6 : 1 }}
           >
             {ROLE_LABEL[r]}

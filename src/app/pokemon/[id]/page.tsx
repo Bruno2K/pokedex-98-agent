@@ -1,10 +1,9 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { fetchPokemonById } from "@/lib/pokeapi/client";
 import { toPokemonDetail } from "@/lib/pokeapi/normalize";
-import { TypeBadge } from "@/components/TypeBadge";
-import { StatBar } from "@/components/StatBar";
-import { Button8bit } from "@/components/Button8bit";
+import { TypeBadge } from "@/components/pokemon/TypeBadge";
+import { StatBar } from "@/components/pokemon/StatBar";
+import { PokedexButton, PokedexLink } from "@/components/pokemon/PokedexButton";
 
 const ROLE_LABEL: Record<string, string> = {
   sweeper: "Sweeper",
@@ -36,20 +35,12 @@ export default async function PokemonDetailPage({
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12, flexWrap: "wrap", gap: 8 }}>
-        <Link href="/" className="btn-8bit" style={{ textDecoration: "none", color: "inherit" }}>
+        <PokedexLink href="/" className="btn-8bit">
           Voltar
-        </Link>
+        </PokedexLink>
         <div style={{ display: "flex", gap: 8 }}>
-          {prevId && (
-            <Link href={`/pokemon/${prevId}`} style={{ textDecoration: "none" }}>
-              <Button8bit>Anterior</Button8bit>
-            </Link>
-          )}
-          {nextId && (
-            <Link href={`/pokemon/${nextId}`} style={{ textDecoration: "none" }}>
-              <Button8bit>Próximo</Button8bit>
-            </Link>
-          )}
+          {prevId && <PokedexButton href={`/pokemon/${prevId}`}>Anterior</PokedexButton>}
+          {nextId && <PokedexButton href={`/pokemon/${nextId}`}>Próximo</PokedexButton>}
         </div>
       </div>
 

@@ -879,6 +879,8 @@ img {
   border: 2px solid;
   border-color: var(--win98-highlight) var(--win98-dark-shadow) var(--win98-dark-shadow) var(--win98-highlight);
   cursor: pointer;
+  display: inline-block;
+  box-sizing: border-box;
 }
 
 .btn-8bit:hover {
@@ -894,6 +896,13 @@ img {
 .type-badge:focus-visible {
   outline: 2px dotted var(--win98-dark-shadow);
   outline-offset: 1px;
+}
+
+/* Garantir que botões dentro de links mantenham estilização */
+a .btn-8bit,
+a.btn-8bit {
+  display: inline-block;
+  text-decoration: none;
 }
 
 .pokemon-card {
@@ -942,6 +951,450 @@ img {
 @keyframes sprite-bounce {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-4px); }
+}
+
+/* Menu de contexto Win98 */
+.win98-context-menu {
+  background: var(--win98-face);
+  border: 2px solid;
+  border-color: var(--win98-dark-shadow) var(--win98-highlight) var(--win98-highlight) var(--win98-dark-shadow);
+  box-shadow: 1px 1px 0 var(--win98-shadow);
+  padding: 2px;
+  min-width: 150px;
+  font-family: "Press Start 2P", monospace;
+}
+
+.win98-context-menu-item {
+  display: block;
+  width: 100%;
+  padding: 4px 8px;
+  text-align: left;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-size: 8px;
+  cursor: pointer;
+  font-family: "Press Start 2P", monospace;
+  line-height: 1.4;
+}
+
+.win98-context-menu-item:hover:not(.win98-context-menu-item-disabled) {
+  background: var(--win98-title-bg);
+  color: var(--win98-title-text);
+}
+
+.win98-context-menu-item-disabled {
+  color: var(--win98-shadow);
+  cursor: default;
+  opacity: 0.6;
+}
+
+/* Explorador de Arquivos estilo Win98 */
+.explorer-window {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 400px;
+  z-index: 100;
+  background: var(--win98-face);
+  border: 2px solid;
+  border-color: var(--win98-highlight) var(--win98-dark-shadow) var(--win98-dark-shadow) var(--win98-highlight);
+  box-shadow: 2px 2px 0 var(--win98-shadow);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.explorer-title-bar .win98-title-bar-text {
+  font-size: 10px;
+}
+
+.explorer-menu-bar {
+  height: 20px;
+  background: var(--win98-face);
+  border-bottom: 1px solid var(--win98-shadow);
+  display: flex;
+  align-items: center;
+  padding: 0 4px;
+  gap: 0;
+}
+
+.explorer-menu-item {
+  padding: 2px 8px;
+  background: transparent;
+  border: none;
+  font-family: "Press Start 2P", monospace;
+  font-size: 8px;
+  color: var(--text-primary);
+  cursor: pointer;
+  height: 100%;
+}
+
+.explorer-menu-item:hover {
+  background: var(--win98-title-bg);
+  color: var(--win98-title-text);
+}
+
+.explorer-toolbar {
+  height: 32px;
+  background: var(--win98-face);
+  border-bottom: 1px solid var(--win98-shadow);
+  display: flex;
+  align-items: center;
+  padding: 2px 4px;
+}
+
+.explorer-toolbar-buttons {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.explorer-toolbar-btn {
+  width: 24px;
+  height: 24px;
+  background: var(--win98-face);
+  border: 1px solid;
+  border-color: var(--win98-highlight) var(--win98-dark-shadow) var(--win98-dark-shadow) var(--win98-highlight);
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.explorer-toolbar-btn:hover {
+  background: var(--win98-light);
+}
+
+.explorer-toolbar-btn:active {
+  border-color: var(--win98-dark-shadow) var(--win98-highlight) var(--win98-highlight) var(--win98-dark-shadow);
+}
+
+.explorer-toolbar-separator {
+  width: 2px;
+  height: 20px;
+  background: var(--win98-shadow);
+  margin: 0 2px;
+  border-left: 1px solid var(--win98-highlight);
+}
+
+.explorer-body {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.explorer-sidebar {
+  width: 180px;
+  background: var(--win98-face);
+  border-right: 1px solid var(--win98-shadow);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.explorer-sidebar-header {
+  height: 20px;
+  background: var(--win98-title-bg);
+  color: var(--win98-title-text);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+  font-size: 8px;
+  font-family: "Press Start 2P", monospace;
+}
+
+.explorer-sidebar-title {
+  flex: 1;
+}
+
+.explorer-sidebar-close {
+  width: 16px;
+  height: 16px;
+  background: transparent;
+  border: none;
+  color: var(--win98-title-text);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.explorer-sidebar-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.explorer-tree {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px;
+}
+
+.explorer-tree-item {
+  margin-bottom: 2px;
+}
+
+.explorer-tree-folder {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 2px 4px;
+  background: transparent;
+  border: 1px solid transparent;
+  text-align: left;
+  cursor: pointer;
+  font-size: 8px;
+  font-family: "Press Start 2P", monospace;
+  color: var(--text-primary);
+}
+
+.explorer-tree-folder:hover {
+  background: var(--win98-light);
+}
+
+.explorer-tree-folder-selected {
+  background: var(--win98-title-bg);
+  color: var(--win98-title-text);
+}
+
+.explorer-tree-icon {
+  margin-right: 4px;
+  font-size: 10px;
+}
+
+.explorer-tree-label {
+  flex: 1;
+}
+
+.explorer-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: #ffffff;
+}
+
+.explorer-content-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.5fr;
+  gap: 8px;
+  background: var(--win98-face);
+  border-bottom: 2px solid var(--win98-shadow);
+  padding: 2px 4px;
+  font-size: 8px;
+  font-family: "Press Start 2P", monospace;
+  font-weight: bold;
+}
+
+.explorer-column-header {
+  cursor: pointer;
+  user-select: none;
+}
+
+.explorer-column-header:hover {
+  background: var(--win98-light);
+}
+
+.explorer-file-list {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.explorer-file-item {
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 8px;
+  font-family: "Press Start 2P", monospace;
+}
+
+.explorer-file-item:hover {
+  background: #e8e8ff;
+}
+
+.explorer-file-name {
+  display: flex;
+  align-items: center;
+}
+
+.explorer-file-size,
+.explorer-file-type {
+  color: #666;
+}
+
+.explorer-status-bar {
+  height: 20px;
+  background: var(--win98-face);
+  border-top: 1px solid var(--win98-shadow);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+  font-size: 7px;
+  font-family: "Press Start 2P", monospace;
+}
+
+.explorer-status-left {
+  flex: 1;
+}
+
+.explorer-status-right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Visualizador de Imagens estilo Win98 */
+.image-viewer-window {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 800px;
+  height: 600px;
+  z-index: 100;
+  background: var(--win98-face);
+  border: 2px solid;
+  border-color: var(--win98-highlight) var(--win98-dark-shadow) var(--win98-dark-shadow) var(--win98-highlight);
+  box-shadow: 2px 2px 0 var(--win98-shadow);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.image-viewer-title-bar .win98-title-bar-text {
+  font-size: 10px;
+}
+
+.image-viewer-toolbar {
+  height: 32px;
+  background: var(--win98-face);
+  border-bottom: 1px solid var(--win98-shadow);
+  display: flex;
+  align-items: center;
+  padding: 2px 4px;
+  gap: 4px;
+}
+
+.image-viewer-btn {
+  padding: 4px 8px;
+  background: var(--win98-face);
+  border: 1px solid;
+  border-color: var(--win98-highlight) var(--win98-dark-shadow) var(--win98-dark-shadow) var(--win98-highlight);
+  font-family: "Press Start 2P", monospace;
+  font-size: 7px;
+  color: var(--text-primary);
+  cursor: pointer;
+  min-height: 22px;
+}
+
+.image-viewer-btn:hover:not(:disabled) {
+  background: var(--win98-light);
+}
+
+.image-viewer-btn:active:not(:disabled) {
+  border-color: var(--win98-dark-shadow) var(--win98-highlight) var(--win98-highlight) var(--win98-dark-shadow);
+  padding: 5px 7px 3px 9px;
+}
+
+.image-viewer-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.image-viewer-separator {
+  width: 2px;
+  height: 20px;
+  background: var(--win98-shadow);
+  margin: 0 2px;
+  border-left: 1px solid var(--win98-highlight);
+}
+
+.image-viewer-zoom-info {
+  font-family: "Press Start 2P", monospace;
+  font-size: 7px;
+  color: var(--text-primary);
+  margin-left: auto;
+  padding: 0 4px;
+}
+
+.image-viewer-body {
+  flex: 1;
+  background: #c0c0c0;
+  border: 2px inset;
+  border-color: var(--win98-dark-shadow) var(--win98-highlight) var(--win98-highlight) var(--win98-dark-shadow);
+  padding: 4px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+}
+
+.image-viewer-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+  background: #ffffff;
+}
+
+.image-viewer-image-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-width: 100px;
+  min-height: 100px;
+  transition: transform 0.1s ease;
+  transform-origin: center center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-viewer-image-container img {
+  max-width: none;
+  max-height: none;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.image-viewer-error {
+  padding: 20px;
+  font-family: "Press Start 2P", monospace;
+  font-size: 8px;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.image-viewer-status-bar {
+  height: 20px;
+  background: var(--win98-face);
+  border-top: 1px solid var(--win98-shadow);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+  font-size: 7px;
+  font-family: "Press Start 2P", monospace;
+}
+
+.image-viewer-status-left {
+  flex: 1;
+}
+
+.image-viewer-status-right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 @media (max-width: 600px) {

@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import windowsIcon from "@/img/windows_slanted-1.png";
+
+const windowsIcon = "/icons/windows_slanted-1.png";
 
 export type TaskbarWindow = {
   id: string;

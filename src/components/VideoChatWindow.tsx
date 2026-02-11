@@ -1,8 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import oakImage from "@/img/oak.png";
 import { useDragWindow } from "@/hooks/useDragWindow";
+
+const oakImage = "/icons/oak.png";
 
 type VideoChatWindowProps = {
   onClose: () => void;
