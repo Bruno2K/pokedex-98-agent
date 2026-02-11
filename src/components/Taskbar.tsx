@@ -1,5 +1,8 @@
 "use client";
 
+import Image from "next/image";
+import windowsIcon from "@/img/windows_slanted-1.png";
+
 export type TaskbarWindow = {
   id: string;
   title: string;
@@ -14,9 +17,11 @@ type TaskbarProps = {
 export function Taskbar({ windows, activeWindowId, onWindowClick }: TaskbarProps) {
   return (
     <footer className="win98-taskbar" role="navigation" aria-label="Barra de tarefas">
-      <button type="button" className="win98-taskbar-start" aria-label="Iniciar">
-        <span className="win98-taskbar-start-icon">🪟</span>
-        <span className="win98-taskbar-start-text">Iniciar</span>
+      <button type="button" className="win98-taskbar-start" aria-label="Start">
+        <span className="win98-taskbar-start-icon">
+          <Image src={windowsIcon} alt="Windows" width={16} height={16} />
+        </span>
+        <span className="win98-taskbar-start-text">Start</span>
       </button>
       <div className="win98-taskbar-windows">
         {windows.map((win) => (
@@ -31,6 +36,11 @@ export function Taskbar({ windows, activeWindowId, onWindowClick }: TaskbarProps
           </button>
         ))}
       </div>
+      <div className="win98-taskbar-tray" aria-hidden>
+        <div className="win98-taskbar-tray-icon" />
+        <div className="win98-taskbar-clock">10:06</div>
+      </div>
     </footer>
   );
 }
+
