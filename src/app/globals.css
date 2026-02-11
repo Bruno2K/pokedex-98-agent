@@ -1,0 +1,627 @@
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+
+:root {
+  /* Windows 98 palette */
+  --win98-title-bg: #000080;
+  --win98-title-text: #ffffff;
+  --win98-face: #c0c0c0;
+  --win98-highlight: #ffffff;
+  --win98-light: #dfdfdf;
+  --win98-shadow: #808080;
+  --win98-dark-shadow: #404040;
+  --win98-desktop: #008080;
+  --win98-window-bg: #c0c0c0;
+  --win98-inset: #808080;
+  /* Legacy (for type badges that keep color) */
+  --gb-dark: #0f380f;
+  --gb-green-1: #306230;
+  --gb-green-2: #8bac0f;
+  --gb-green-3: #9bbc0f;
+  --text-primary: #000000;
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: "Press Start 2P", monospace;
+  font-size: 10px;
+  line-height: 1.6;
+  color: var(--text-primary);
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+/* Área de desktop Win98 (fundo teal + ícones) */
+.win98-desktop {
+  min-height: 100vh;
+  width: 100%;
+  background: var(--win98-desktop);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px 16px 36px 16px;
+  position: relative;
+  box-sizing: border-box;
+}
+
+/* Barra de tarefas Win98 */
+.win98-taskbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 28px;
+  background: var(--win98-face);
+  border-top: 2px solid var(--win98-highlight);
+  display: flex;
+  align-items: stretch;
+  z-index: 1000;
+  box-shadow: 0 -1px 0 var(--win98-shadow);
+}
+
+.win98-taskbar-start {
+  min-width: 72px;
+  height: 100%;
+  background: linear-gradient(180deg, #1084d0 0%, #000080 100%);
+  border: 2px solid;
+  border-color: var(--win98-highlight) var(--win98-dark-shadow) var(--win98-dark-shadow) var(--win98-highlight);
+  color: #fff;
+  font-weight: bold;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  padding: 0 8px;
+  font-family: "Press Start 2P", monospace;
+}
+
+.win98-taskbar-start:hover {
+  background: linear-gradient(180deg, #2094e0 0%, #1084d0 100%);
+}
+
+.win98-taskbar-start:active {
+  border-color: var(--win98-dark-shadow) var(--win98-highlight) var(--win98-highlight) var(--win98-dark-shadow);
+}
+
+.win98-taskbar-start-icon {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.win98-taskbar-windows {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+  gap: 2px;
+  padding: 2px 4px 2px 2px;
+  min-width: 0;
+}
+
+.win98-taskbar-btn {
+  flex: 0 1 auto;
+  max-width: 200px;
+  min-width: 80px;
+  height: 22px;
+  margin: 0;
+  padding: 0 8px;
+  background: var(--win98-face);
+  border: 2px solid;
+  border-color: var(--win98-highlight) var(--win98-dark-shadow) var(--win98-dark-shadow) var(--win98-highlight);
+  font-size: 8px;
+  font-family: "Press Start 2P", monospace;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+}
+
+.win98-taskbar-btn:hover {
+  background: var(--win98-light);
+}
+
+.win98-taskbar-btn-active {
+  border-color: var(--win98-dark-shadow) var(--win98-highlight) var(--win98-highlight) var(--win98-dark-shadow);
+  background: var(--win98-face);
+  padding: 2px 6px 0 10px;
+}
+
+.win98-taskbar-btn-active:hover {
+  background: var(--win98-light);
+}
+
+.win98-desktop-icons {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.win98-desktop-icon {
+  position: absolute;
+  width: 88px;
+  padding: 6px;
+  text-align: center;
+  cursor: default;
+  border: 1px solid transparent;
+  border-radius: 0;
+  pointer-events: auto;
+}
+
+.win98-desktop-icon:hover {
+  background: var(--win98-title-bg);
+  border-color: var(--win98-highlight);
+  pointer-events: auto;
+}
+
+.win98-desktop-icon-img {
+  display: block;
+  width: 32px;
+  height: 32px;
+  margin: 0 auto 4px;
+  font-size: 28px;
+  line-height: 32px;
+}
+
+.win98-desktop-icon-label {
+  display: block;
+  font-size: 8px;
+  line-height: 1.3;
+  color: #ffffff;
+  text-shadow: 1px 1px 0 #000000;
+  word-break: break-word;
+}
+
+.win98-desktop-window {
+  position: relative;
+  z-index: 1;
+}
+
+.pokedex-shell-wrapper {
+  cursor: default;
+}
+
+.win98-title-bar-draggable {
+  cursor: move;
+  user-select: none;
+}
+
+/* Pop-up Bate-papo por vídeo (Win98 + 8-bit) */
+.video-chat-window {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 420px;
+  max-width: calc(100vw - 32px);
+  z-index: 100;
+  background: var(--win98-face);
+  border: 2px solid;
+  border-color: var(--win98-highlight) var(--win98-dark-shadow) var(--win98-dark-shadow) var(--win98-highlight);
+  box-shadow: 2px 2px 0 var(--win98-shadow);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.video-chat-title-bar .win98-title-bar-text {
+  font-size: 10px;
+}
+
+.video-chat-body {
+  padding: 8px;
+  background: var(--win98-window-bg);
+  border: 2px solid;
+  border-color: var(--win98-dark-shadow) var(--win98-light) var(--win98-light) var(--win98-dark-shadow);
+  margin: 0 4px 4px 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.video-chat-video-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+/* Área de vídeo estilo 8-bit (Game Boy) */
+.video-chat-video {
+  position: relative;
+  aspect-ratio: 1;
+  background: var(--gb-dark);
+  border: 4px solid var(--gb-dark);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+}
+
+.video-chat-pixel-frame {
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 0 4px var(--gb-green-1);
+  pointer-events: none;
+}
+
+.video-chat-video-oak {
+  background: linear-gradient(180deg, var(--gb-green-1) 0%, var(--gb-dark) 100%);
+}
+
+.video-chat-video-you {
+  background: linear-gradient(180deg, var(--gb-green-2) 0%, var(--gb-green-1) 100%);
+}
+
+.video-chat-avatar {
+  font-size: 48px;
+  line-height: 1;
+  margin-bottom: 4px;
+  image-rendering: pixelated;
+  filter: contrast(1.1);
+}
+
+.video-chat-avatar-oak {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+}
+
+.video-chat-oak-img {
+  width: 100%;
+  max-width: 120px;
+  height: auto;
+  max-height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+.video-chat-label {
+  font-size: 8px;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.video-chat-status {
+  font-size: 6px;
+  color: var(--gb-green-2);
+}
+
+.video-chat-bar {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.video-chat-btn {
+  font-size: 8px;
+  padding: 6px 10px;
+}
+
+.video-chat-btn-end {
+  background: #c03028;
+  color: #fff;
+  border-color: #fff #5c0000 #5c0000 #fff;
+}
+
+.video-chat-btn-end:hover {
+  background: #e05048;
+}
+
+.video-chat-btn-end:active {
+  border-color: #5c0000 #fff #fff #5c0000;
+}
+
+img {
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+/* Janela Windows 98: borda em relevo (claro top/left, escuro bottom/right) */
+.pokedex-shell {
+  width: 900px;
+  max-width: calc(100vw - 32px);
+  height: 640px;
+  max-height: 85vh;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  background: var(--win98-face);
+  border: 2px solid;
+  border-color: var(--win98-highlight) var(--win98-dark-shadow) var(--win98-dark-shadow) var(--win98-highlight);
+  box-shadow: 1px 1px 0 var(--win98-shadow);
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Barra de título Win98 */
+.win98-title-bar {
+  height: 22px;
+  min-height: 22px;
+  background: var(--win98-title-bg);
+  color: var(--win98-title-text);
+  display: flex;
+  align-items: center;
+  padding: 0 2px 0 4px;
+  flex-shrink: 0;
+}
+
+.win98-title-bar-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.win98-title-bar-text {
+  flex: 1;
+  font-size: 11px;
+  line-height: 22px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.win98-title-buttons {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+}
+
+.win98-title-btn {
+  width: 22px;
+  height: 20px;
+  min-width: 22px;
+  border: 1px solid;
+  border-color: var(--win98-highlight) var(--win98-dark-shadow) var(--win98-dark-shadow) var(--win98-highlight);
+  background: var(--win98-face);
+  color: #000;
+  font-size: 9px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  font-family: "Press Start 2P", monospace;
+}
+
+.win98-title-btn:hover {
+  background: var(--win98-light);
+}
+
+.win98-title-btn:active {
+  border-color: var(--win98-dark-shadow) var(--win98-highlight) var(--win98-highlight) var(--win98-dark-shadow);
+  padding: 1px 0 0 1px;
+}
+
+.win98-title-btn-close {
+  font-size: 8px;
+  margin-left: 2px;
+}
+
+/* Área do cliente: borda rebaixada (inset) */
+.pokedex-screen {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: var(--win98-window-bg);
+  padding: 12px;
+  border: 2px solid;
+  border-color: var(--win98-dark-shadow) var(--win98-light) var(--win98-light) var(--win98-dark-shadow);
+  margin: 0 4px 4px 4px;
+  scrollbar-width: auto;
+  scrollbar-color: var(--win98-face) var(--win98-shadow);
+}
+
+/* Scrollbar estilo Windows 98 */
+.pokedex-screen::-webkit-scrollbar {
+  width: 18px;
+}
+
+.pokedex-screen::-webkit-scrollbar-track {
+  background: var(--win98-face);
+  border: 1px solid;
+  border-color: var(--win98-dark-shadow) var(--win98-light) var(--win98-light) var(--win98-dark-shadow);
+  margin: 0 2px;
+}
+
+.pokedex-screen::-webkit-scrollbar-thumb {
+  background: var(--win98-face);
+  border: 2px solid;
+  border-color: var(--win98-highlight) var(--win98-dark-shadow) var(--win98-dark-shadow) var(--win98-highlight);
+  min-height: 30px;
+}
+
+.pokedex-screen::-webkit-scrollbar-thumb:hover {
+  background: var(--win98-light);
+}
+
+.pokedex-screen::-webkit-scrollbar-button {
+  height: 18px;
+  width: 18px;
+  background: var(--win98-face);
+  border: 1px solid;
+  border-color: var(--win98-highlight) var(--win98-dark-shadow) var(--win98-dark-shadow) var(--win98-highlight);
+  color: #000;
+  font-size: 10px;
+  line-height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pokedex-screen::-webkit-scrollbar-button:hover {
+  background: var(--win98-light);
+}
+
+.pokedex-screen::-webkit-scrollbar-button:active {
+  border-color: var(--win98-dark-shadow) var(--win98-highlight) var(--win98-highlight) var(--win98-dark-shadow);
+}
+
+/* Campo de texto estilo Win98 (rebaixado) */
+.pokedex-screen input[type="text"] {
+  background: #ffffff;
+  border: 2px solid;
+  border-color: var(--win98-dark-shadow) var(--win98-light) var(--win98-light) var(--win98-dark-shadow);
+  padding: 4px 6px;
+}
+
+/* Badges estilo Win98 (relevo) - mantém cores de tipo */
+.type-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 8px;
+  text-transform: uppercase;
+  border: 2px solid;
+  border-color: var(--win98-highlight) var(--win98-dark-shadow) var(--win98-dark-shadow) var(--win98-highlight);
+  margin: 2px;
+  background: var(--win98-face);
+  color: var(--text-primary);
+}
+
+.stat-bar-wrap {
+  width: 100%;
+  height: 14px;
+  background: var(--win98-face);
+  border: 2px solid;
+  border-color: var(--win98-dark-shadow) var(--win98-light) var(--win98-light) var(--win98-dark-shadow);
+  margin: 4px 0;
+}
+
+.stat-bar-fill {
+  height: 100%;
+  background: var(--win98-title-bg);
+  transition: width 0.2s ease;
+}
+
+/* Botões Win98: relevo, pressionado = rebaixado */
+.btn-8bit {
+  font-family: "Press Start 2P", monospace;
+  font-size: 10px;
+  padding: 6px 12px;
+  background: var(--win98-face);
+  color: var(--text-primary);
+  border: 2px solid;
+  border-color: var(--win98-highlight) var(--win98-dark-shadow) var(--win98-dark-shadow) var(--win98-highlight);
+  cursor: pointer;
+}
+
+.btn-8bit:hover {
+  background: var(--win98-light);
+}
+
+.btn-8bit:active {
+  border-color: var(--win98-dark-shadow) var(--win98-highlight) var(--win98-highlight) var(--win98-dark-shadow);
+}
+
+.btn-8bit:focus-visible,
+.pokemon-card:focus-visible,
+.type-badge:focus-visible {
+  outline: 2px dotted var(--win98-dark-shadow);
+  outline-offset: 1px;
+}
+
+.pokemon-card {
+  background: var(--win98-face);
+  border: 2px solid;
+  border-color: var(--win98-highlight) var(--win98-dark-shadow) var(--win98-dark-shadow) var(--win98-highlight);
+  padding: 8px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.pokemon-card:hover {
+  background: var(--win98-light);
+}
+
+.pokemon-card:active {
+  border-color: var(--win98-dark-shadow) var(--win98-highlight) var(--win98-highlight) var(--win98-dark-shadow);
+}
+
+.pokemon-card .sprite-wrap {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pokemon-card img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.pokemon-card .name {
+  font-size: 8px;
+  word-break: break-word;
+  margin-bottom: 4px;
+  line-height: 1.5;
+}
+
+.sprite-bounce {
+  animation: sprite-bounce 1s ease-in-out infinite;
+}
+
+@keyframes sprite-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@media (max-width: 600px) {
+  .win98-desktop-icons {
+    display: none;
+  }
+  .pokedex-shell {
+    width: 100%;
+    height: 85vh;
+    min-height: 400px;
+  }
+  .pokedex-screen {
+    padding: 8px;
+    margin: 0 2px 2px 2px;
+  }
+  .pokedex-screen::-webkit-scrollbar {
+    width: 16px;
+  }
+  .win98-title-btn {
+    width: 20px;
+    min-width: 20px;
+    height: 18px;
+  }
+  body {
+    font-size: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pokemon-detail-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
