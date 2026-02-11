@@ -12,6 +12,7 @@ import { CalendarWindow } from "@/components/CalendarWindow";
 import { ExplorerWindow } from "@/components/ExplorerWindow";
 import { ImageViewerWindow } from "@/components/ImageViewerWindow";
 import { BrowserWindow } from "@/components/BrowserWindow";
+import { PacManWindow } from "@/components/PacManWindow";
 
 import { ContextMenu } from "@/components/ContextMenu";
 import { playWindowsErrorSound } from "@/lib/windows-error-sound";
@@ -40,6 +41,7 @@ const DESKTOP_ICONS = [
   { label: "Meus Documentos", x: "24px", y: "504px", id: "docs" },
   { label: "Calculadora", x: "24px", y: "600px", id: "calculator" },
   { label: "Calendário", x: "24px", y: "696px", id: "calendar" },
+  { label: "Pac-Man", x: "24px", y: "792px", id: "pacman" },
   { label: "Treinador", x: "calc(100% - 100px)", y: "24px", id: "trainer" },
   { label: "Ginásios", x: "calc(100% - 100px)", y: "120px", id: "gym" },
   { label: "Centro Pokémon", x: "calc(100% - 100px)", y: "216px", id: "center" },
@@ -54,6 +56,7 @@ const CALENDAR_ID = "calendar";
 const EXPLORER_ID = "explorer";
 const IMAGE_VIEWER_ID = "image-viewer";
 const BROWSER_ID = "browser";
+const PACMAN_ID = "pacman";
 
 type Win98DesktopProps = {
   children: React.ReactNode;
@@ -69,6 +72,7 @@ export function Win98Desktop({ children }: Win98DesktopProps) {
   const [imageViewerOpen, setImageViewerOpen] = useState(false);
   const [imageViewerData, setImageViewerData] = useState<{ imagePath: string; imageList: string[]; index: number } | null>(null);
   const [browserOpen, setBrowserOpen] = useState(false);
+  const [pacmanOpen, setPacmanOpen] = useState(false);
   const [activeWindowId, setActiveWindowId] = useState<string | null>(null);
   const [minimizedPokedex, setMinimizedPokedex] = useState(false);
   const [minimizedVideo, setMinimizedVideo] = useState(false);
@@ -77,6 +81,7 @@ export function Win98Desktop({ children }: Win98DesktopProps) {
   const [minimizedExplorer, setMinimizedExplorer] = useState(false);
   const [minimizedImageViewer, setMinimizedImageViewer] = useState(false);
   const [minimizedBrowser, setMinimizedBrowser] = useState(false);
+  const [minimizedPacman, setMinimizedPacman] = useState(false);
   const [trashIsEmpty, setTrashIsEmpty] = useState(false);
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
 
@@ -103,8 +108,11 @@ export function Win98Desktop({ children }: Win98DesktopProps) {
     if (browserOpen) {
       list.push({ id: BROWSER_ID, title: "Internet Explorer" });
     }
+    if (pacmanOpen) {
+      list.push({ id: PACMAN_ID, title: "Pac-Man" });
+    }
     return list;
-  }, [pokedexOpen, videoChatOpen, calculatorOpen, calendarOpen, explorerOpen, imageViewerOpen, imageViewerData, browserOpen]);
+  }, [pokedexOpen, videoChatOpen, calculatorOpen, calendarOpen, explorerOpen, imageViewerOpen, imageViewerData, browserOpen, pacmanOpen]);
 
   const handleTaskbarWindowClick = useCallback(
     (id: string) => {
@@ -173,9 +181,22 @@ export function Win98Desktop({ children }: Win98DesktopProps) {
           setActiveWindowId(BROWSER_ID);
           setMinimizedBrowser(false);
         }
+      } else if (id === PACMAN_ID) {
+        if (!pacmanOpen) {
+          setPacmanOpen(true);
+          setActiveWindowId(PACMAN_ID);
+          setMinimizedPacman(false);
+          return;
+        }
+        if (activeWindowId === PACMAN_ID) {
+          setMinimizedPacman((m) => !m);
+        } else {
+          setActiveWindowId(PACMAN_ID);
+          setMinimizedPacman(false);
+        }
       }
     },
-    [activeWindowId, pokedexOpen, videoChatOpen, calculatorOpen, calendarOpen, explorerOpen, browserOpen]
+    [activeWindowId, pokedexOpen, videoChatOpen, calculatorOpen, calendarOpen, explorerOpen, browserOpen, pacmanOpen]
   );
 
   const handleVideoClose = useCallback(() => {
@@ -238,6 +259,14 @@ export function Win98Desktop({ children }: Win98DesktopProps) {
     setBrowserOpen(false);
     setMinimizedBrowser(false);
     if (activeWindowId === BROWSER_ID) {
+      setActiveWindowId(null);
+    }
+  }, [activeWindowId]);
+
+  const handlePacmanClose = useCallback(() => {
+    setPacmanOpen(false);
+    setMinimizedPacman(false);
+    if (activeWindowId === PACMAN_ID) {
       setActiveWindowId(null);
     }
   }, [activeWindowId]);
@@ -310,11 +339,17 @@ export function Win98Desktop({ children }: Win98DesktopProps) {
                               setActiveWindowId(BROWSER_ID);
                               setMinimizedBrowser(false);
                             }
-                          : item.id === "settings"
+                          : item.id === "pacman"
                             ? () => {
-                                router.push("/bsod");
+                                setPacmanOpen(true);
+                                setActiveWindowId(PACMAN_ID);
+                                setMinimizedPacman(false);
                               }
-                            : undefined
+                            : item.id === "settings"
+                              ? () => {
+                                  router.push("/bsod");
+                                }
+                              : undefined
             }
             onKeyDown={
               item.id === "pokedex"
@@ -385,14 +420,23 @@ export function Win98Desktop({ children }: Win98DesktopProps) {
                             setMinimizedBrowser(false);
                           }
                         }
-                      : item.id === "settings"
+                      : item.id === "pacman"
                         ? (e) => {
                             if (e.key === "Enter" || e.key === " ") {
                               e.preventDefault();
-                              router.push("/bsod");
+                              setPacmanOpen(true);
+                              setActiveWindowId(PACMAN_ID);
+                              setMinimizedPacman(false);
                             }
                           }
-                        : undefined
+                        : item.id === "settings"
+                          ? (e) => {
+                              if (e.key === "Enter" || e.key === " ") {
+                                e.preventDefault();
+                                router.push("/bsod");
+                              }
+                            }
+                          : undefined
             }
             onContextMenu={item.id === "trash" ? handleTrashContextMenu : undefined}
             role={
@@ -403,7 +447,8 @@ export function Win98Desktop({ children }: Win98DesktopProps) {
               item.id === "settings" ||
               item.id === "pc" ||
               item.id === "trash" ||
-              item.id === "internet"
+              item.id === "internet" ||
+              item.id === "pacman"
                 ? "button"
                 : undefined
             }
@@ -415,7 +460,8 @@ export function Win98Desktop({ children }: Win98DesktopProps) {
               item.id === "settings" ||
               item.id === "pc" ||
               item.id === "trash" ||
-              item.id === "internet"
+              item.id === "internet" ||
+              item.id === "pacman"
                 ? 0
                 : undefined
             }
@@ -434,9 +480,11 @@ export function Win98Desktop({ children }: Win98DesktopProps) {
                       ? "Abrir calendário"
                       : item.id === "internet"
                         ? "Abrir navegador Internet Explorer"
-                        : item.id === "settings"
-                          ? "Abrir configurações"
-                          : undefined
+                        : item.id === "pacman"
+                          ? "Abrir jogo Pac-Man"
+                          : item.id === "settings"
+                            ? "Abrir configurações"
+                            : undefined
             }
           >
             <span className="win98-desktop-icon-img">
@@ -483,6 +531,9 @@ export function Win98Desktop({ children }: Win98DesktopProps) {
               )}
               {item.id === "calendar" && (
                 <Image src={calendarIcon} alt="Calendário" width={32} height={32} />
+              )}
+              {item.id === "pacman" && (
+                <span style={{ fontSize: "28px", lineHeight: "32px" }}>🟡</span>
               )}
             </span>
             <span className="win98-desktop-icon-label">{item.label}</span>
@@ -592,6 +643,20 @@ export function Win98Desktop({ children }: Win98DesktopProps) {
           }}
           onMinimize={() => {
             setMinimizedBrowser((m) => !m);
+          }}
+        />
+      )}
+      {pacmanOpen && (
+        <PacManWindow
+          onClose={handlePacmanClose}
+          zIndex={activeWindowId === PACMAN_ID ? 30 : 15}
+          isMinimized={minimizedPacman}
+          onFocus={() => {
+            setActiveWindowId(PACMAN_ID);
+            setMinimizedPacman(false);
+          }}
+          onMinimize={() => {
+            setMinimizedPacman((m) => !m);
           }}
         />
       )}
