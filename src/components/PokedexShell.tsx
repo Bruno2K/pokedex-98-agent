@@ -8,9 +8,11 @@ type PokedexShellProps = {
   zIndex?: number;
   isMinimized?: boolean;
   onFocus?: () => void;
+  onClose?: () => void;
+  onMinimize?: () => void;
 };
 
-export function PokedexShell({ children, zIndex = 10, isMinimized = false, onFocus }: PokedexShellProps) {
+export function PokedexShell({ children, zIndex = 10, isMinimized = false, onFocus, onClose, onMinimize }: PokedexShellProps) {
   const { position, elementRef, startDrag } = useDragWindow({
     initialPosition: null,
   });
@@ -44,12 +46,31 @@ export function PokedexShell({ children, zIndex = 10, isMinimized = false, onFoc
           onPointerDown={handleTitlePointerDown}
           role="presentation"
         >
-          <div className="win98-title-bar-icon" aria-hidden>📘</div>
           <span className="win98-title-bar-text">Pokédex - 151 Pokémon</span>
           <div className="win98-title-buttons">
-            <button type="button" className="win98-title-btn" aria-label="Minimizar">−</button>
+            <button
+              type="button"
+              className="win98-title-btn"
+              aria-label="Minimizar"
+              onClick={(e) => {
+                e.stopPropagation();
+                onMinimize?.();
+              }}
+            >
+              −
+            </button>
             <button type="button" className="win98-title-btn" aria-label="Maximizar">□</button>
-            <button type="button" className="win98-title-btn win98-title-btn-close" aria-label="Fechar">×</button>
+            <button
+              type="button"
+              className="win98-title-btn win98-title-btn-close"
+              aria-label="Fechar"
+              onClick={(e) => {
+                e.stopPropagation();
+                onClose?.();
+              }}
+            >
+              ×
+            </button>
           </div>
         </div>
         <div className="pokedex-screen">{children}</div>
