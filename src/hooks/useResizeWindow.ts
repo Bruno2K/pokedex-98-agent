@@ -13,7 +13,7 @@ type UseResizeWindowOptions = {
   minHeight?: number;
   maxWidth?: number;
   maxHeight?: number;
-  elementRef?: RefObject<HTMLDivElement>;
+  elementRef?: RefObject<HTMLDivElement | null>;
 };
 
 export function useResizeWindow(options: UseResizeWindowOptions = {}) {
