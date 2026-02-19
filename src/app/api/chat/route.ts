@@ -133,7 +133,7 @@ export async function POST(request: NextRequest) {
 
     // Debug: log do histórico preparado
     if (process.env.NODE_ENV === "development") {
-      console.log("Histórico preparado:", JSON.stringify(geminiHistory.map(h => ({ role: h.role, preview: h.parts[0]?.text?.substring(0, 50) })), null, 2));
+      console.log("Histórico preparado:", JSON.stringify(geminiHistory.map((h: { role: string; parts: { text?: string }[] }) => ({ role: h.role, preview: h.parts[0]?.text?.substring(0, 50) })), null, 2));
     }
 
     // Se após remover mensagens do modelo não sobrar nada, ou se o histórico estiver vazio
